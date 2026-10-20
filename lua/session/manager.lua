@@ -89,6 +89,7 @@ function M.load_record(record, skip_switch_save)
 
 	local ok, err = pcall(function()
 		vim.cmd("silent source " .. vim.fn.fnameescape(record.path))
+		vim.api.nvim_set_current_dir(record.root)
 	end)
 	if not ok then
 		return nil, err

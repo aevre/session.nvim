@@ -25,7 +25,10 @@ assert(session.list()[1].root == tmp .. "/project")
 assert(session.active().name == "review")
 local duplicate, duplicate_err = session.save("review")
 assert(not duplicate and duplicate_err == "session already exists")
+vim.fn.mkdir(tmp .. "/other", "p")
+vim.cmd.cd(tmp .. "/other")
 assert(session.save("review", true) == path)
+assert(vim.fn.getcwd() == tmp .. "/other", "saving must preserve the current working directory")
 
 vim.api.nvim_buf_set_lines(0, 0, -1, false, { "changed" })
 vim.bo.modified = false
@@ -34,6 +37,7 @@ assert(default_path ~= path)
 assert(session.list()[1].name == "default")
 assert(session.load("review"))
 assert(session.active().name == "review")
+assert(vim.fn.getcwd() == tmp .. "/project", "loading must use the session root instead of its saved cwd")
 
 local last = session.last()
 assert(last)

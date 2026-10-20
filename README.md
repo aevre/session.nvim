@@ -60,7 +60,7 @@ A session is identified by project root and optional name. Omitting the name use
 - `list()`: return `{ path, root, name }` metadata records, newest first.
 - `active()`: return the active session record, or `nil`.
 
-Before loading, the plugin asks for confirmation when named file buffers have unsaved changes.
+Before loading, the plugin asks for confirmation when named file buffers have unsaved changes. After sourcing the native session, it sets the working directory to the recorded project root.
 
 ## Commands
 
