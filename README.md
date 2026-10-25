@@ -20,11 +20,11 @@ A small Neovim project-session manager built on native `:mksession` and `:source
 
 ## Installation
 
-The canonical repository is hosted on Codeberg: <https://codeberg.org/aevre/session.nvim>.
+Available on Codeberg: <https://codeberg.org/aevre/session.nvim> and GitHub: <https://github.com/aevre/session.nvim>.
 
 ```lua
 {
-  "https://codeberg.org/aevre/session.nvim",
+  "https://github.com/aevre/session.nvim",
   opts = {},
 }
 ```

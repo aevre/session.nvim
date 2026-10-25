@@ -20,11 +20,11 @@
 
 ## 安装
 
-Canonical 仓库位于 Codeberg：<https://codeberg.org/aevre/session.nvim>。
+同时托管于 Codeberg：<https://codeberg.org/aevre/session.nvim> 和 GitHub：<https://github.com/aevre/session.nvim>。
 
 ```lua
 {
-  "https://codeberg.org/aevre/session.nvim",
+  "https://github.com/aevre/session.nvim",
   opts = {},
 }
 ```
