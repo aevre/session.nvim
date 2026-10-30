@@ -2,8 +2,8 @@ local M = {}
 local startup_cwd = assert((vim.uv or vim.loop).cwd())
 
 local function normalize(path)
-	local normalized = vim.fs.normalize(path):gsub("/$", "")
-	return normalized
+	local normalized = vim.fs.normalize(path)
+	return normalized ~= "/" and normalized:gsub("/$", "") or normalized
 end
 
 ---Find the project identity for a buffer using LSP, Git, then startup cwd.

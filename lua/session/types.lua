@@ -1,8 +1,8 @@
 ---@class session.Config
----@field dir string Session storage directory.
----@field autosave boolean Save the active session before Neovim exits.
----@field autosave_on_switch boolean Save the current session before loading another.
----@field auto_restore boolean Restore the best matching session on startup.
+---@field dir? string Session storage directory.
+---@field autosave? boolean Save the active session before Neovim exits.
+---@field autosave_on_switch? boolean Save the current session before loading another.
+---@field auto_restore? boolean Restore the best matching session on startup.
 
 ---@class session.Record
 ---@field path string Absolute path to the session file.

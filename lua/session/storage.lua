@@ -3,8 +3,8 @@ local uv = vim.uv or vim.loop
 local metadata_prefix = '" session.nvim: '
 
 local function normalize(path)
-	local normalized = vim.fs.normalize(path):gsub("/$", "")
-	return normalized
+	local normalized = vim.fs.normalize(path)
+	return normalized ~= "/" and normalized:gsub("/$", "") or normalized
 end
 
 ---Validate and normalize an optional user-provided name.
@@ -53,10 +53,13 @@ end
 ---@return session.Record[]
 function M.list(dir)
 	local result = {}
-	for _, path in ipairs(vim.fn.glob(dir .. "/*.vim", false, true)) do
-		local record = M.read(path)
-		if record then
-			result[#result + 1] = record
+	for name, kind in vim.fs.dir(dir) do
+		if kind == "file" and name:match("%.vim$") then
+			local path = dir .. "/" .. name
+			local record = M.read(path)
+			if record then
+				result[#result + 1] = record
+			end
 		end
 	end
 	table.sort(result, function(a, b)

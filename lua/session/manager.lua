@@ -79,6 +79,10 @@ function M.load_record(record, skip_switch_save)
 		return false
 	end
 
+	if not uv.fs_stat(record.root) then
+		return nil, "session project root not found"
+	end
+
 	local config = Config.get()
 	if active and config.autosave_on_switch and not skip_switch_save then
 		local saved, err = M.save_to(active.root, active.name, true)

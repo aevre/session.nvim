@@ -17,6 +17,10 @@ session.setup({ dir = tmp .. "/sessions", autosave = false })
 session.setup({ dir = tmp .. "/sessions", autosave = false })
 assert(vim.fn.exists(":SessionSave") == 2, "setup should support plugin defaults followed by user options")
 
+local Storage = require("session.storage")
+local root_path = Storage.path(tmp .. "/sessions", "/", "root")
+assert(root_path:match(vim.fn.sha256("/") .. "%-%-root%.vim$"), "session storage should preserve the filesystem root")
+
 local path, err = session.save("review")
 assert(path, err)
 assert(path:match("%x+%-%-review%.vim$"))
@@ -42,6 +46,11 @@ assert(vim.fn.getcwd() == tmp .. "/project", "loading must use the session root 
 local last = session.last()
 assert(last)
 assert(session.list()[1].path == path or session.list()[1].path == default_path)
+
+local special_dir = tmp .. "/[sessions]"
+session.setup({ dir = special_dir, autosave = false })
+local special_path = assert(session.save("special"))
+assert(special_path and #session.list() == 1, "session listing should support glob characters in storage paths")
 
 local auto_dir = tmp .. "/autosave"
 vim.fn.mkdir(auto_dir .. "/project/.git", "p")
