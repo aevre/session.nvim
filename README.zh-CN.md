@@ -55,6 +55,8 @@ require("session").setup({
 
 - `save(name?, force?)`：保存当前 workspace 并将其设为活动会话；仅当 `force` 为 `true` 时覆盖已有会话。
 - `load(name?)`：加载当前项目的默认或命名会话。
+- `delete(name?, force?)`：删除当前项目的默认或命名会话；`force` 为 `true` 时跳过确认。
+- `rename(name?, new_name)`：重命名当前项目的默认或命名会话，不覆盖已有会话。
 - `select()`：通过 `vim.ui.select()` 选择任意已保存会话。
 - `last()`：加载最后修改的会话。
 - `list()`：按修改时间倒序返回 `{ path, root, name }` 元数据记录。
@@ -68,8 +70,12 @@ require("session").setup({
 - `:SessionLast`
 - `:SessionSave[!] [name]`
 - `:SessionLoad [name]`
+- `:SessionDelete[!] [name]`
+- `:SessionRename [old_name] new_name`
 
-`:SessionSave!` 中的 `!` 允许覆盖已有命名会话。
+`:SessionDelete` 不带名称时会从全部已保存会话中选择。`:SessionRename` 不带参数时会打开会话列表，活动会话排在首位，然后提示输入新名称。
+
+`:SessionSave!` 中的 `!` 允许覆盖已有命名会话；`:SessionDelete!` 中的 `!` 会跳过确认。
 
 ## 原生 Session 行为
 

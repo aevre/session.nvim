@@ -55,6 +55,8 @@ A session is identified by project root and optional name. Omitting the name use
 
 - `save(name?, force?)`: save the current workspace and activate it; existing sessions are overwritten only when `force` is `true`.
 - `load(name?)`: load the current project's default or named session.
+- `delete(name?, force?)`: delete the current project's default or named session; confirmation is skipped when `force` is `true`.
+- `rename(name?, new_name)`: rename the current project's default or named session without overwriting an existing session.
 - `select()`: select any saved session through `vim.ui.select()`.
 - `last()`: load the most recently modified session.
 - `list()`: return `{ path, root, name }` metadata records, newest first.
@@ -68,8 +70,12 @@ Before loading, the plugin asks for confirmation when named file buffers have un
 - `:SessionLast`
 - `:SessionSave[!] [name]`
 - `:SessionLoad [name]`
+- `:SessionDelete[!] [name]`
+- `:SessionRename [old_name] new_name`
 
-The `!` on `:SessionSave!` permits replacing an existing named session.
+Without a name, `:SessionDelete` selects from all saved sessions. Without arguments, `:SessionRename` selects a session with the active one listed first, then prompts for its new name.
+
+The `!` on `:SessionSave!` permits replacing an existing named session. The `!` on `:SessionDelete!` skips confirmation.
 
 ## Native session behavior
 

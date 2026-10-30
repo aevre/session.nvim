@@ -34,11 +34,14 @@ end
 ---@param path string
 ---@return session.Record?
 function M.read(path)
-	local lines = vim.fn.readfile(path, "", 8)
+	local ok, lines = pcall(vim.fn.readfile, path, "", 8)
+	if not ok then
+		return
+	end
 	for _, line in ipairs(lines) do
 		if line:sub(1, #metadata_prefix) == metadata_prefix then
-			local ok, data = pcall(vim.json.decode, line:sub(#metadata_prefix + 1))
-			if ok and type(data) == "table" and type(data.root) == "string" and type(data.name) == "string" then
+			local decoded, data = pcall(vim.json.decode, line:sub(#metadata_prefix + 1))
+			if decoded and type(data) == "table" and type(data.root) == "string" and type(data.name) == "string" then
 				local valid_name, normalized = pcall(M.name, data.name)
 				if valid_name and normalized == data.name then
 					return { path = path, root = normalize(data.root), name = data.name }
@@ -78,7 +81,12 @@ end
 ---@return true?, string?
 function M.write_metadata(path, root, name)
 	local lines = vim.fn.readfile(path)
-	table.insert(lines, 1, metadata_prefix .. vim.json.encode({ root = normalize(root), name = name }))
+	local metadata = metadata_prefix .. vim.json.encode({ root = normalize(root), name = name })
+	if lines[1] and lines[1]:sub(1, #metadata_prefix) == metadata_prefix then
+		lines[1] = metadata
+	else
+		table.insert(lines, 1, metadata)
+	end
 	local ok, result = pcall(vim.fn.writefile, lines, path)
 	if not ok then
 		return nil, result

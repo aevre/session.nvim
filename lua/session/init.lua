@@ -6,6 +6,8 @@ local Manager = require("session.manager")
 ---@field setup fun(opts?: session.Config)
 ---@field save fun(name?: session.Name, force?: boolean): session.SaveResult
 ---@field load fun(name?: session.Name): session.LoadResult
+---@field delete fun(name?: session.Name, force?: boolean): session.DeleteResult
+---@field rename fun(name: session.Name, new_name: string): session.RenameResult
 ---@field select fun()
 ---@field last fun(): session.LoadResult
 ---@field list fun(): session.Record[]
@@ -37,6 +39,8 @@ end
 
 M.save = Manager.save
 M.load = Manager.load
+M.delete = Manager.delete
+M.rename = Manager.rename
 M.select = Manager.select
 M.last = Manager.last
 M.list = Manager.list

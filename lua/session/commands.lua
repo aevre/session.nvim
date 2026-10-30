@@ -17,6 +17,32 @@ function M.setup(manager)
 			vim.notify("session.nvim: " .. tostring(err), vim.log.levels.WARN)
 		end
 	end, { nargs = "?", force = true })
+	vim.api.nvim_create_user_command("SessionDelete", function(args)
+		if args.args == "" then
+			manager.delete_select(args.bang)
+			return
+		end
+		local ok, err = manager.delete(args.args, args.bang)
+		if not ok and err then
+			vim.notify("session.nvim: " .. tostring(err), vim.log.levels.ERROR)
+		end
+	end, { nargs = "?", bang = true, force = true })
+	vim.api.nvim_create_user_command("SessionRename", function(args)
+		if args.args == "" then
+			manager.rename_select()
+			return
+		end
+		local names = vim.split(args.args, "%s+", { trimempty = true })
+		if #names > 2 then
+			vim.notify("session.nvim: expected [old_name] new_name", vim.log.levels.ERROR)
+			return
+		end
+		local name, new_name = names[2] and names[1] or nil, names[2] or names[1]
+		local path, err = manager.rename(name, new_name)
+		if not path then
+			vim.notify("session.nvim: " .. tostring(err), vim.log.levels.ERROR)
+		end
+	end, { nargs = "*", force = true })
 end
 
 return M
