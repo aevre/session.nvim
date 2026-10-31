@@ -19,8 +19,8 @@
 ---@field active fun(): session.Record?
 ---@field save fun(name?: session.Name, force?: boolean): session.SaveResult
 ---@field load fun(name?: session.Name): session.LoadResult
----@field delete fun(name?: session.Name, force?: boolean): session.DeleteResult
----@field rename fun(name: session.Name, new_name: string): session.RenameResult
+---@field delete fun(force?: boolean): session.DeleteResult
+---@field rename fun(new_name: session.Name): session.RenameResult
 ---@field delete_select fun(force?: boolean)
 ---@field rename_select fun()
 ---@field select fun()
@@ -30,8 +30,8 @@
 ---@field setup fun(opts?: session.Config)
 ---@field save fun(name?: session.Name, force?: boolean): session.SaveResult
 ---@field load fun(name?: session.Name): session.LoadResult
----@field delete fun(name?: session.Name, force?: boolean): session.DeleteResult
----@field rename fun(name: session.Name, new_name: string): session.RenameResult
+---@field delete fun(force?: boolean): session.DeleteResult
+---@field rename fun(new_name: session.Name): session.RenameResult
 ---@field select fun()
 ---@field last fun(): boolean?, string?
 ---@field list fun(): session.Record[]

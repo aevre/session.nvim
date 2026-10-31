@@ -25,31 +25,25 @@ function M.setup(manager)
 		end
 	end, { nargs = "?", force = true })
 	vim.api.nvim_create_user_command("SessionDelete", function(args)
-		if args.args == "" then
-			manager.delete_select(args.bang)
-			return
-		end
-		local ok, err = manager.delete(args.args, args.bang)
+		local ok, err = manager.delete(args.bang)
 		if not ok and err then
 			vim.notify("session.nvim: " .. tostring(err), vim.log.levels.ERROR)
 		end
-	end, { nargs = "?", bang = true, force = true })
+	end, { bang = true, force = true })
+	vim.api.nvim_create_user_command("SessionDeleteSelect", function(args)
+		manager.delete_select(args.bang)
+	end, { bang = true, force = true })
 	vim.api.nvim_create_user_command("SessionRename", function(args)
 		if args.args == "" then
-			manager.rename_select()
+			vim.notify("session.nvim: usage: SessionRename new_name", vim.log.levels.ERROR)
 			return
 		end
-		local names = vim.split(args.args, "%s+", { trimempty = true })
-		if #names > 2 then
-			vim.notify("session.nvim: expected [old_name] new_name", vim.log.levels.ERROR)
-			return
-		end
-		local name, new_name = names[2] and names[1] or nil, names[2] or names[1]
-		local path, err = manager.rename(name, new_name)
+		local path, err = manager.rename(args.args)
 		if not path then
 			vim.notify("session.nvim: " .. tostring(err), vim.log.levels.ERROR)
 		end
-	end, { nargs = "*", force = true })
+	end, { nargs = 1, force = true })
+	vim.api.nvim_create_user_command("SessionRenameSelect", manager.rename_select, { force = true })
 end
 
 return M

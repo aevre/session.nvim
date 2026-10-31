@@ -151,14 +151,14 @@ function M.delete_record(record, force)
 	return true
 end
 
----Delete a named session from the current project.
----@param name session.Name
+---Delete the active session.
 ---@param force? boolean
 ---@return boolean?, string?
-function M.delete(name, force)
-	local config = Config.get()
-	local root = Project.root()
-	return M.delete_record(Storage.read(Storage.path(config.dir, root, name)), force)
+function M.delete(force)
+	if not active then
+		return nil, "no active session"
+	end
+	return M.delete_record(active, force)
 end
 
 ---Rename a session record.
@@ -205,15 +205,11 @@ function M.rename_record(record, new_name)
 	return target
 end
 
----Rename a named session in the current project.
----@param name session.Name
+---Rename the active session.
 ---@param new_name session.Name
 ---@return string?, string?
-function M.rename(name, new_name)
-	local config = Config.get()
-	local root = Project.root()
-	local record = Storage.read(Storage.path(config.dir, root, name))
-	return M.rename_record(record, new_name)
+function M.rename(new_name)
+	return M.rename_record(active, new_name)
 end
 
 ---Select and delete any saved session.

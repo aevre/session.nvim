@@ -18,6 +18,8 @@ session.setup({ dir = tmp .. "/sessions", autosave = false })
 assert(vim.fn.exists(":SessionSave") == 2, "setup should support plugin defaults followed by user options")
 assert(vim.fn.exists(":SessionDelete") == 2)
 assert(vim.fn.exists(":SessionRename") == 2)
+assert(vim.fn.exists(":SessionDeleteSelect") == 2)
+assert(vim.fn.exists(":SessionRenameSelect") == 2)
 assert(vim.fn.exists(":SessionInfo") == 2)
 
 local Storage = require("session.storage")
@@ -68,14 +70,31 @@ end)
 rawset(vim.ui, "input", function(_, callback)
 	callback("renamed")
 end)
-vim.cmd("SessionRename")
-local renamed_path = Storage.path(tmp .. "/sessions", tmp .. "/project", "renamed")
+local renamed_path = assert(session.rename("renamed"))
 assert(not vim.uv.fs_stat(path))
 assert(vim.uv.fs_stat(renamed_path))
 assert(session.active().path == renamed_path and session.active().name == "renamed")
 assert(Storage.read(renamed_path).name == "renamed")
-local conflict, conflict_err = session.rename("renamed", nil)
+local conflict, conflict_err = session.rename("default")
 assert(not conflict and conflict_err == "session already exists")
+local selected_rename
+rawset(vim.ui, "select", function(items, _, callback)
+	for _, record in ipairs(items) do
+		if record.name == "default" then
+			selected_rename = record
+			callback(record)
+			return
+		end
+	end
+	error("interactive rename did not list the default session")
+end)
+rawset(vim.ui, "input", function(_, callback)
+	callback("default-renamed")
+end)
+vim.cmd("SessionRenameSelect")
+assert(selected_rename.name == "default")
+assert(Storage.read(Storage.path(tmp .. "/sessions", tmp .. "/project", "default-renamed")))
+assert(session.active().name == "renamed", "renaming another listed session must not change active identity")
 local original_confirm = vim.fn.confirm
 rawset(vim.fn, "confirm", function(message)
 	assert(message:find("Name: renamed", 1, true))
@@ -83,7 +102,7 @@ rawset(vim.fn, "confirm", function(message)
 	assert(message:find("This cannot be undone.", 1, true))
 	return 1
 end)
-assert(session.delete("renamed") == false)
+assert(session.delete() == false)
 rawset(vim.fn, "confirm", original_confirm)
 rawset(vim.ui, "select", function(items, _, callback)
 	for _, record in ipairs(items) do
@@ -94,7 +113,7 @@ rawset(vim.ui, "select", function(items, _, callback)
 	end
 	error("interactive delete did not list the renamed session")
 end)
-vim.cmd("SessionDelete!")
+vim.cmd("SessionDeleteSelect!")
 rawset(vim.ui, "select", original_select)
 rawset(vim.ui, "input", original_input)
 assert(not vim.uv.fs_stat(renamed_path))
@@ -106,8 +125,8 @@ end)
 vim.cmd("SessionInfo")
 assert(info_message == "No active session")
 rawset(vim, "notify", original_notify)
-local missing, missing_err = session.delete("renamed", true)
-assert(not missing and missing_err == "session not found")
+local missing, missing_err = session.delete()
+assert(not missing and missing_err == "no active session")
 
 local special_dir = tmp .. "/[sessions]"
 session.setup({ dir = special_dir, autosave = false })
