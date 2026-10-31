@@ -5,6 +5,13 @@ local M = {}
 function M.setup(manager)
 	vim.api.nvim_create_user_command("SessionSelect", manager.select, { force = true })
 	vim.api.nvim_create_user_command("SessionLast", manager.last, { force = true })
+	vim.api.nvim_create_user_command("SessionInfo", function()
+		local record = manager.active()
+		local message = record
+				and ("Session: " .. record.name .. "\nProject: " .. record.root .. "\nFile: " .. record.path)
+			or "No active session"
+		vim.notify(message, vim.log.levels.INFO, { title = "session.nvim" })
+	end, { force = true })
 	vim.api.nvim_create_user_command("SessionSave", function(args)
 		local path, err = manager.save(args.args ~= "" and args.args or nil, args.bang)
 		if not path then

@@ -68,12 +68,13 @@ require("session").setup({
 
 - `:SessionSelect`
 - `:SessionLast`
+- `:SessionInfo`
 - `:SessionSave[!] [name]`
 - `:SessionLoad [name]`
 - `:SessionDelete[!] [name]`
 - `:SessionRename [old_name] new_name`
 
-`:SessionDelete` 不带名称时会从全部已保存会话中选择。`:SessionRename` 不带参数时会打开会话列表，活动会话排在首位，然后提示输入新名称。
+`:SessionDelete` 不带名称时会从全部已保存会话中选择。`:SessionRename` 不带参数时会打开会话列表，活动会话排在首位，然后提示输入新名称。`:SessionInfo` 显示当前活动会话的名称、项目根目录和文件路径。
 
 `:SessionSave!` 中的 `!` 允许覆盖已有命名会话；`:SessionDelete!` 中的 `!` 会跳过确认。
 

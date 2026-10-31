@@ -16,6 +16,7 @@
 ---@alias session.RenameResult string?, string?
 
 ---@class session.Manager
+---@field active fun(): session.Record?
 ---@field save fun(name?: session.Name, force?: boolean): session.SaveResult
 ---@field load fun(name?: session.Name): session.LoadResult
 ---@field delete fun(name?: session.Name, force?: boolean): session.DeleteResult

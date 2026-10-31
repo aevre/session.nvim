@@ -68,12 +68,13 @@ Before loading, the plugin asks for confirmation when named file buffers have un
 
 - `:SessionSelect`
 - `:SessionLast`
+- `:SessionInfo`
 - `:SessionSave[!] [name]`
 - `:SessionLoad [name]`
 - `:SessionDelete[!] [name]`
 - `:SessionRename [old_name] new_name`
 
-Without a name, `:SessionDelete` selects from all saved sessions. Without arguments, `:SessionRename` selects a session with the active one listed first, then prompts for its new name.
+Without a name, `:SessionDelete` selects from all saved sessions. Without arguments, `:SessionRename` selects a session with the active one listed first, then prompts for its new name. `:SessionInfo` displays the active session's name, project root, and file path.
 
 The `!` on `:SessionSave!` permits replacing an existing named session. The `!` on `:SessionDelete!` skips confirmation.
 

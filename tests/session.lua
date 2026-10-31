@@ -18,6 +18,7 @@ session.setup({ dir = tmp .. "/sessions", autosave = false })
 assert(vim.fn.exists(":SessionSave") == 2, "setup should support plugin defaults followed by user options")
 assert(vim.fn.exists(":SessionDelete") == 2)
 assert(vim.fn.exists(":SessionRename") == 2)
+assert(vim.fn.exists(":SessionInfo") == 2)
 
 local Storage = require("session.storage")
 local root_path = Storage.path(tmp .. "/sessions", "/", "root")
@@ -43,6 +44,15 @@ assert(default_path ~= path)
 assert(session.list()[1].name == "default")
 assert(session.load("review"))
 assert(session.active().name == "review")
+local original_notify = vim.notify
+local info_message
+rawset(vim, "notify", function(message)
+	info_message = message
+end)
+vim.cmd("SessionInfo")
+assert(info_message:find("Session: review", 1, true))
+assert(info_message:find("Project: " .. tmp .. "/project", 1, true))
+rawset(vim, "notify", original_notify)
 assert(vim.fn.getcwd() == tmp .. "/project", "loading must use the session root instead of its saved cwd")
 
 local last = session.last()
@@ -89,6 +99,13 @@ rawset(vim.ui, "select", original_select)
 rawset(vim.ui, "input", original_input)
 assert(not vim.uv.fs_stat(renamed_path))
 assert(session.active() == nil)
+info_message = nil
+rawset(vim, "notify", function(message)
+	info_message = message
+end)
+vim.cmd("SessionInfo")
+assert(info_message == "No active session")
+rawset(vim, "notify", original_notify)
 local missing, missing_err = session.delete("renamed", true)
 assert(not missing and missing_err == "session not found")
 
