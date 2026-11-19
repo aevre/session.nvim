@@ -88,6 +88,8 @@ The plugin does not implement separate buffer, window, or editor-state serializa
 
 ## Development
 
+Run `:checkhealth session` in Neovim to inspect runtime requirements. `make health` exercises the same provider headlessly.
+
 Run the complete local check from the repository root:
 
 ```sh
