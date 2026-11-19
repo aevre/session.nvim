@@ -32,6 +32,8 @@
 ---@field load fun(name?: session.Name): session.LoadResult
 ---@field delete fun(force?: boolean): session.DeleteResult
 ---@field rename fun(new_name: session.Name): session.RenameResult
+---@field delete_select fun(force?: boolean)
+---@field rename_select fun()
 ---@field select fun()
 ---@field last fun(): boolean?, string?
 ---@field list fun(): session.Record[]
