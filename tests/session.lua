@@ -2,7 +2,10 @@ local test_file = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p")
 local tmp = vim.fn.tempname()
 if vim.env.SESSION_AUTOSAVE_CHILD then
 	local session = require("session")
-	session.setup({ dir = vim.env.SESSION_TEST_DIR, autosave = vim.env.SESSION_AUTOSAVE_ENABLED == "1" })
+	session.setup({
+		dir = vim.env.SESSION_TEST_DIR,
+		autosave = vim.env.SESSION_AUTOSAVE_ENABLED == "1",
+	})
 	vim.cmd("edit " .. vim.fn.fnameescape(vim.env.SESSION_TEST_DIR .. "/project/one.txt"))
 	return
 end
@@ -17,7 +20,10 @@ assert(type(session.delete_select) == "function")
 assert(type(session.rename_select) == "function")
 session.setup({ dir = tmp .. "/sessions", autosave = false })
 session.setup({ dir = tmp .. "/sessions", autosave = false })
-assert(vim.fn.exists(":SessionSave") == 2, "setup should support plugin defaults followed by user options")
+assert(
+	vim.fn.exists(":SessionSave") == 2,
+	"setup should support plugin defaults followed by user options"
+)
 assert(vim.fn.exists(":SessionDelete") == 2)
 assert(vim.fn.exists(":SessionRename") == 2)
 assert(vim.fn.exists(":SessionDeleteSelect") == 2)
@@ -26,7 +32,10 @@ assert(vim.fn.exists(":SessionInfo") == 2)
 
 local Storage = require("session.storage")
 local root_path = Storage.path(tmp .. "/sessions", "/", "root")
-assert(root_path:match(vim.fn.sha256("/") .. "%-%-root%.vim$"), "session storage should preserve the filesystem root")
+assert(
+	root_path:match(vim.fn.sha256("/") .. "%-%-root%.vim$"),
+	"session storage should preserve the filesystem root"
+)
 
 local path, err = session.save("review")
 assert(path, err)
@@ -57,7 +66,10 @@ vim.cmd("SessionInfo")
 assert(info_message:find("Session: review", 1, true))
 assert(info_message:find("Project: " .. tmp .. "/project", 1, true))
 rawset(vim, "notify", original_notify)
-assert(vim.fn.getcwd() == tmp .. "/project", "loading must use the session root instead of its saved cwd")
+assert(
+	vim.fn.getcwd() == tmp .. "/project",
+	"loading must use the session root instead of its saved cwd"
+)
 
 local last = session.last()
 assert(last)
@@ -66,7 +78,10 @@ assert(session.load("review"))
 
 local original_select, original_input = vim.ui.select, vim.ui.input
 rawset(vim.ui, "select", function(items, _, callback)
-	assert(items[1].path == session.active().path, "interactive rename should put the active session first")
+	assert(
+		items[1].path == session.active().path,
+		"interactive rename should put the active session first"
+	)
 	callback(items[1])
 end)
 rawset(vim.ui, "input", function(_, callback)
@@ -96,7 +111,10 @@ end)
 vim.cmd("SessionRenameSelect")
 assert(selected_rename.name == "default")
 assert(Storage.read(Storage.path(tmp .. "/sessions", tmp .. "/project", "default-renamed")))
-assert(session.active().name == "renamed", "renaming another listed session must not change active identity")
+assert(
+	session.active().name == "renamed",
+	"renaming another listed session must not change active identity"
+)
 local original_confirm = vim.fn.confirm
 rawset(vim.fn, "confirm", function(message)
 	assert(message:find("Name: renamed", 1, true))
@@ -133,7 +151,10 @@ assert(not missing and missing_err == "no active session")
 local special_dir = tmp .. "/[sessions]"
 session.setup({ dir = special_dir, autosave = false })
 local special_path = assert(session.save("special"))
-assert(special_path and #session.list() == 1, "session listing should support glob characters in storage paths")
+assert(
+	special_path and #session.list() == 1,
+	"session listing should support glob characters in storage paths"
+)
 
 local auto_dir = tmp .. "/autosave"
 vim.fn.mkdir(auto_dir .. "/project/.git", "p")

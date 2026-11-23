@@ -41,7 +41,12 @@ function M.read(path)
 	for _, line in ipairs(lines) do
 		if line:sub(1, #metadata_prefix) == metadata_prefix then
 			local decoded, data = pcall(vim.json.decode, line:sub(#metadata_prefix + 1))
-			if decoded and type(data) == "table" and type(data.root) == "string" and type(data.name) == "string" then
+			if
+				decoded
+				and type(data) == "table"
+				and type(data.root) == "string"
+				and type(data.name) == "string"
+			then
 				local valid_name, normalized = pcall(M.name, data.name)
 				if valid_name and normalized == data.name then
 					return { path = path, root = normalize(data.root), name = data.name }

@@ -44,7 +44,12 @@ function M.save_to(root, name, force)
 		pcall(uv.fs_unlink, temp)
 		return nil, rename_err
 	end
-	active = { path = target, root = root, name = name }
+	active = {
+		path = target,
+		root = root,
+		name = name,
+	}
+
 	return target
 end
 
@@ -200,7 +205,11 @@ function M.rename_record(record, new_name)
 		return nil, delete_err
 	end
 	if active and active.path == record.path then
-		active = { path = target, root = record.root, name = new_name }
+		active = {
+			path = target,
+			root = record.root,
+			name = new_name,
+		}
 	end
 	return target
 end
@@ -214,14 +223,18 @@ end
 
 ---Select and delete any saved session.
 function M.delete_select(force)
-	vim.ui.select(M.list(), { prompt = "Delete session> ", format_item = format_record }, function(record)
-		if record then
-			local ok, err = M.delete_record(record, force)
-			if not ok and err then
-				vim.notify("session.nvim: " .. tostring(err), vim.log.levels.ERROR)
+	vim.ui.select(
+		M.list(),
+		{ prompt = "Delete session> ", format_item = format_record },
+		function(record)
+			if record then
+				local ok, err = M.delete_record(record, force)
+				if not ok and err then
+					vim.notify("session.nvim: " .. tostring(err), vim.log.levels.ERROR)
+				end
 			end
 		end
-	end)
+	)
 end
 
 ---Select and rename any saved session, with the active session first.
@@ -236,19 +249,26 @@ function M.rename_select()
 			end
 		end
 	end
-	vim.ui.select(records, { prompt = "Rename session> ", format_item = format_record }, function(record)
-		if not record then
-			return
-		end
-		vim.ui.input({ prompt = "New session name: ", default = record.name }, function(new_name)
-			if new_name and new_name ~= "" then
-				local path, err = M.rename_record(record, new_name)
-				if not path then
-					vim.notify("session.nvim: " .. tostring(err), vim.log.levels.ERROR)
-				end
+	vim.ui.select(
+		records,
+		{ prompt = "Rename session> ", format_item = format_record },
+		function(record)
+			if not record then
+				return
 			end
-		end)
-	end)
+			vim.ui.input(
+				{ prompt = "New session name: ", default = record.name },
+				function(new_name)
+					if new_name and new_name ~= "" then
+						local path, err = M.rename_record(record, new_name)
+						if not path then
+							vim.notify("session.nvim: " .. tostring(err), vim.log.levels.ERROR)
+						end
+					end
+				end
+			)
+		end
+	)
 end
 
 ---List saved sessions, newest first.
